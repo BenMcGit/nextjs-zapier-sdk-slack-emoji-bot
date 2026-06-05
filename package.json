@@ -1,0 +1,36 @@
+{
+  "name": "nextjs-zapier-sdk-slack-emoji-bot",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.4",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "zapier:connections": "tsx scripts/list-connections.ts",
+    "zapier:discover": "tsx scripts/discover.ts",
+    "zapier:inboxes": "tsx scripts/list-inboxes.ts",
+
+    "zapier:run-action": "tsx scripts/run-action.ts",
+    "zapier:trigger-sample": "tsx scripts/trigger-sample.ts",
+    "zapier:delete-inbox": "tsx scripts/delete-inbox.ts",
+    "generate:secret": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
+    "vercel:sync-env": "bash scripts/sync-env-to-vercel.sh"
+  },
+  "dependencies": {
+    "@zapier/zapier-sdk": "^0.68.0",
+    "next": "16.2.7",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@zapier/zapier-sdk-cli": "^0.53.1",
+    "tailwindcss": "^4",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}
