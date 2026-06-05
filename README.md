@@ -6,7 +6,7 @@ A Next.js template for building a Slack bot powered by the [Zapier SDK](https://
 
 ## Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-boilerplate&env=ZAPIER_CREDENTIALS_CLIENT_ID,ZAPIER_CREDENTIALS_CLIENT_SECRET,ZAPIER_WEBHOOK_SECRET,SLACK_CHANNEL_ID,SLACK_EMOJI,BOT_MESSAGE&envDescription=Zapier%20SDK%20credentials%2C%20webhook%20secret%2C%20and%20bot%20configuration&envLink=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-boilerplate%2F-%2Fblob%2Fmain%2Fdocs%2FGETTING-STARTED.md&project-name=nextjs-zapier-sdk-slack-emoji-bot&repository-name=nextjs-zapier-sdk-slack-emoji-bot)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-slack-emoji-bot&env=ZAPIER_CREDENTIALS_CLIENT_ID,ZAPIER_CREDENTIALS_CLIENT_SECRET,ZAPIER_WEBHOOK_SECRET,SLACK_CHANNEL_ID,SLACK_EMOJI,BOT_MESSAGE&envDescription=Zapier%20SDK%20credentials%2C%20webhook%20secret%2C%20and%20bot%20configuration&envLink=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-slack-emoji-bot%2F-%2Fblob%2Fmain%2Fdocs%2FGETTING-STARTED.md&project-name=nextjs-zapier-sdk-slack-emoji-bot&repository-name=nextjs-zapier-sdk-slack-emoji-bot)
 
 **Required during deploy:**
 
