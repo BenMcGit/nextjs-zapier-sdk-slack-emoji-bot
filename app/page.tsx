@@ -1,4 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import { getZapier } from "@/lib/zapier";
+import { RefreshButton } from "./RefreshButton";
 
 type Connection = {
   id: string;
@@ -57,9 +60,12 @@ export default async function Home() {
       <div className="mx-auto max-w-2xl space-y-10">
         {/* Header */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm font-medium text-zinc-500">
-            <span>Powered by</span>
-            <span className="rounded bg-orange-100 px-1.5 py-0.5 text-orange-700">Zapier</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm font-medium text-zinc-500">
+              <span>Powered by</span>
+              <span className="rounded bg-orange-100 px-1.5 py-0.5 text-orange-700">Zapier</span>
+            </div>
+            <RefreshButton />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
             Zapier SDK Boilerplate

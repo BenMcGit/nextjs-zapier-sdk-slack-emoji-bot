@@ -10,7 +10,7 @@ export async function resolveSlackConnection(): Promise<string> {
   );
   if (!conn) {
     throw new Error(
-      "No active Slack connection found. Connect Slack at https://zapier.com/app/connections and redeploy.",
+      "No active Slack connection found. Connect Slack at https://zapier.com/app/connections.",
     );
   }
   cachedSlackConnectionId = conn.id;

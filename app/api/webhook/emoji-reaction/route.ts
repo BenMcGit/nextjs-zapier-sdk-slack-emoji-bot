@@ -6,9 +6,10 @@ import { emojiReactionTrigger } from "@/lib/triggers";
 import { resolveSlackConnection } from "@/lib/connections";
 
 function normalizePayload(payload: Record<string, unknown>) {
+  const msg = (payload["message"] ?? {}) as Record<string, unknown>;
   return {
-    channel: payload.channel as string,
-    threadTs: payload.item_ts as string,
+    channel: String(payload["conversation"] ?? ""),
+    threadTs: String(msg["ts"] ?? ""),
   };
 }
 
