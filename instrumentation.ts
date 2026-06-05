@@ -19,5 +19,14 @@ export async function register() {
   // the subscription (telling Zapier to watch for emoji reactions) and
   // registers the notification URL (telling Zapier where to POST when events
   // are queued). It's idempotent — safe to call on every cold start.
-  await emojiReactionTrigger.resolveInbox();
+  //
+  // We catch errors here so a transient Zapier API failure or a non-HTTPS
+  // APP_BASE_URL (e.g. localhost in local dev) doesn't crash the server.
+  // The inbox will be retried on the next cold start or manual visit.
+  try {
+    await emojiReactionTrigger.resolveInbox();
+    console.log("[instrumentation] Zapier trigger inbox ready");
+  } catch (err) {
+    console.error("[instrumentation] Failed to resolve trigger inbox — bot will not receive events until this is resolved:", err);
+  }
 }
