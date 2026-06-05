@@ -4,9 +4,21 @@ A Next.js template for building a Slack bot powered by the [Zapier SDK](https://
 
 ---
 
+## Prerequisites
+
+- A [Zapier account](https://zapier.com/sign-up)
+- A [Vercel account](https://vercel.com/signup)
+- The Zapier SDK CLI installed globally:
+  ```bash
+  npm install -g @zapier/zapier-sdk-cli
+  ```
+- Your Slack workspace connected to Zapier at [zapier.com/app/connections](https://zapier.com/app/connections)
+
+---
+
 ## Deploy
 
-**Before you deploy:** Connect your Slack workspace to Zapier at [zapier.com/app/connections](https://zapier.com/app/connections). The bot auto-discovers your Slack connection on first request — no connection ID needed — but the connection must exist first.
+**Before you deploy:** Make sure you've completed the prerequisites above — especially connecting Slack at [zapier.com/app/connections](https://zapier.com/app/connections). The bot auto-discovers your Slack connection on first request — no connection ID needed — but the connection must exist first.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-slack-emoji-bot&env=ZAPIER_CREDENTIALS_CLIENT_ID,ZAPIER_CREDENTIALS_CLIENT_SECRET,ZAPIER_WEBHOOK_SECRET,SLACK_CHANNEL_ID,SLACK_EMOJI,BOT_MESSAGE&envDescription=Zapier%20SDK%20credentials%2C%20webhook%20secret%2C%20and%20bot%20configuration&envLink=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-slack-emoji-bot%2F-%2Fblob%2Fmain%2Fdocs%2FGETTING-STARTED.md&project-name=nextjs-zapier-sdk-slack-emoji-bot&repository-name=nextjs-zapier-sdk-slack-emoji-bot)
 
@@ -14,7 +26,7 @@ A Next.js template for building a Slack bot powered by the [Zapier SDK](https://
 
 | Variable | How to get it |
 |---|---|
-| `ZAPIER_CREDENTIALS_CLIENT_ID` | Run `npx zapier-sdk login` then `npx zapier-sdk create-client-credentials "my-bot"` |
+| `ZAPIER_CREDENTIALS_CLIENT_ID` | Run `zapier-sdk login` then `zapier-sdk create-client-credentials "nextjs-zapier-sdk-slack-emoji-bot"` |
 | `ZAPIER_CREDENTIALS_CLIENT_SECRET` | Same command — shown once, save it |
 | `ZAPIER_WEBHOOK_SECRET` | Any random string, e.g. `openssl rand -hex 32` |
 | `SLACK_CHANNEL_ID` | Right-click the channel in Slack → Copy link → the ID is the last path segment |
