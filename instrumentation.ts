@@ -12,6 +12,13 @@ export async function register() {
   // the Zapier SDK requires Node.js APIs and can't run there. Skip it.
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
 
+  // Only bootstrap the inbox in production. Preview and development deployments
+  // have different URLs — if they ran resolveInbox(), they would overwrite the
+  // inbox's notification URL and break the production bot.
+  // VERCEL_ENV is "production" | "preview" | "development" on Vercel, and
+  // undefined locally — we allow undefined so local dev can still attempt it.
+  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production") return;
+
   // Dynamic import so the Zapier SDK is only loaded in the Node.js runtime.
   const { emojiReactionTrigger } = await import("./lib/triggers");
 
