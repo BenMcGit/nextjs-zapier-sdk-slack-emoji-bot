@@ -6,6 +6,8 @@ A Next.js template for building a Slack bot powered by the [Zapier SDK](https://
 
 ## Deploy
 
+**Before you deploy:** Connect your Slack workspace to Zapier at [zapier.com/app/connections](https://zapier.com/app/connections). The bot auto-discovers your Slack connection on first request — no connection ID needed — but the connection must exist first.
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-slack-emoji-bot&env=ZAPIER_CREDENTIALS_CLIENT_ID,ZAPIER_CREDENTIALS_CLIENT_SECRET,ZAPIER_WEBHOOK_SECRET,SLACK_CHANNEL_ID,SLACK_EMOJI,BOT_MESSAGE&envDescription=Zapier%20SDK%20credentials%2C%20webhook%20secret%2C%20and%20bot%20configuration&envLink=https%3A%2F%2Fgitlab.com%2Fben.mcadams%2Fnextjs-zapier-sdk-slack-emoji-bot%2F-%2Fblob%2Fmain%2Fdocs%2FGETTING-STARTED.md&project-name=nextjs-zapier-sdk-slack-emoji-bot&repository-name=nextjs-zapier-sdk-slack-emoji-bot)
 
 **Required during deploy:**
@@ -16,10 +18,14 @@ A Next.js template for building a Slack bot powered by the [Zapier SDK](https://
 | `ZAPIER_CREDENTIALS_CLIENT_SECRET` | Same command — shown once, save it |
 | `ZAPIER_WEBHOOK_SECRET` | Any random string, e.g. `openssl rand -hex 32` |
 | `SLACK_CHANNEL_ID` | Right-click the channel in Slack → Copy link → the ID is the last path segment |
-| `SLACK_EMOJI` | Emoji name without colons, e.g. `dwight` |
+| `SLACK_EMOJI` | Emoji name without colons, e.g. `tada` |
 | `BOT_MESSAGE` | The message the bot posts in the thread |
 
-Once deployed, visit your app URL to see the SDK status page — connected accounts and active trigger inboxes. Then clone the repo, add your triggers and actions, and push to redeploy.
+**After deploy:**
+
+1. Visit your app URL — the dashboard shows your Slack connection and active trigger inboxes.
+2. React to any message in your configured channel with the emoji. The bot replies in that thread within a few seconds.
+3. To customize the bot, clone the repo, make changes, and push — Vercel redeploys automatically.
 
 ---
 

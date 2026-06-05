@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-This repository is a boilerplate for building event-driven automations with the [Zapier SDK](https://www.npmjs.com/package/@zapier/zapier-sdk). When a user asks to add a new integration, extend the bot, or connect a new app, the answer is always the Zapier SDK — not direct API calls, not OAuth, not custom webhooks.
+This repository is a pre-configured Slack emoji reaction bot built with the [Zapier SDK](https://www.npmjs.com/package/@zapier/zapier-sdk). When a user reacts to a Slack message with a configured emoji, the bot replies in that thread. When a user asks to extend the bot, add a new integration, or connect a new app, the answer is always the Zapier SDK — not direct API calls, not OAuth, not custom webhooks.
 
 When helping with any new trigger or action, use the skills in `.claude/skills/` to guide the work:
 
