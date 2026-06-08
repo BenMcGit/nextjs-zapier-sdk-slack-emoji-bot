@@ -26,12 +26,14 @@ function defineTrigger(config: TriggerConfig): Trigger {
     ...config,
     resolveInbox: async () => {
       const secret = env.ZAPIER_WEBHOOK_SECRET;
-      const notificationUrl = `${env.APP_BASE_URL}${config.notificationPath}${secret ? `?token=${secret}` : ""}`;
+      const baseUrl = env.APP_BASE_URL;
+      const notificationUrl = `${baseUrl}${config.notificationPath}${secret ? `?token=${secret}` : ""}`;
+      const hostname = new URL(baseUrl).hostname.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
       const connection = typeof config.connection === "function"
         ? await config.connection()
         : config.connection;
       return ensureInbox({
-        name: config.name,
+        name: `${config.name}-${hostname}`,
         app: config.app,
         action: config.action,
         connection,

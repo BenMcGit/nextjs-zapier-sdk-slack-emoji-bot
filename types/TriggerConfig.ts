@@ -8,9 +8,10 @@
  */
 export type TriggerConfig = {
   /**
-   * Unique inbox name used as the stable identity key across deployments.
-   * `ensureInbox` always resolves the same physical inbox for the same name —
-   * changing this creates a new inbox and abandons the old one.
+   * Base name for the trigger inbox. The deployment hostname is appended
+   * automatically so each Vercel project gets its own inbox — e.g.,
+   * `"my-bot"` becomes `"my-bot-my-project-vercel-app"`. Changing this
+   * creates a new inbox and abandons the old one.
    */
   name: string;
 

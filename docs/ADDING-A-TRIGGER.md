@@ -48,7 +48,7 @@ In **`lib/triggers.ts`**, add a `defineTrigger` call under the "Triggers" sectio
 
 ```ts
 export const myAppEvent = defineTrigger({
-  name: "my-bot-my-app-event",        // unique name — changing this creates a new inbox
+  name: "my-bot-my-app-event",        // base name — hostname appended automatically; changing this creates a new inbox
   app: "<app>",                        // from step 1
   action: "<trigger>",                 // from step 1
   connection: env.ZAPIER_MY_APP_CONNECTION_ID,
