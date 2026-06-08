@@ -4,9 +4,11 @@ import { getZapier } from "@/lib/zapier";
 import { env } from "@/lib/env";
 import { ActivateButton } from "./ActivateButton";
 import { DeactivateButton } from "./DeactivateButton";
+import { RefreshButton } from "./RefreshButton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { ExternalLink } from "lucide-react";
 
 async function getBotStatus() {
   try {
@@ -80,7 +82,10 @@ export default async function Home() {
             )}
 
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Connection</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Connections</p>
+                <RefreshButton />
+              </div>
               <div className="flex items-center justify-between gap-4 text-sm">
                 <span className="shrink-0 text-muted-foreground">Slack</span>
                 {status.slackConnection ? (
@@ -89,7 +94,14 @@ export default async function Home() {
                     <span className="truncate font-medium">{status.slackConnection.title}</span>
                   </div>
                 ) : (
-                  <span className="text-xs text-muted-foreground">Not connected</span>
+                  <a
+                    href="https://zapier.com/app/connections"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors"
+                  >
+                    Connect <ExternalLink className="h-3 w-3" />
+                  </a>
                 )}
               </div>
               <a
@@ -118,7 +130,7 @@ export default async function Home() {
               </div>
             </div>
 
-            {!status.active && (
+            {!status.active && status.slackConnection && (
               <>
                 <Separator />
                 <ActivateButton />
