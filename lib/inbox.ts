@@ -41,6 +41,10 @@ export async function ensureInbox(params: EnsureInboxParams): Promise<string> {
   return inboxId;
 }
 
+export function clearInboxCache(name: string) {
+  inboxIdCache.delete(name);
+}
+
 /**
  * Drains all queued messages from a Zapier trigger inbox, invoking the
  * callback for each one. Messages are acknowledged on success and released

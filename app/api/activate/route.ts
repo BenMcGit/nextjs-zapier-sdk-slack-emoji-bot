@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { emojiReactionTrigger } from "@/lib/triggers";
 import { getZapier } from "@/lib/zapier";
+import { clearInboxCache } from "@/lib/inbox";
 import { env } from "@/lib/env";
 
 export async function POST() {
@@ -37,6 +38,7 @@ export async function DELETE() {
       return NextResponse.json({ ok: false, error: "Inbox not found" }, { status: 404 });
     }
     await zapier.deleteTriggerInbox({ inbox: inbox.id });
+    clearInboxCache(expectedName);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
