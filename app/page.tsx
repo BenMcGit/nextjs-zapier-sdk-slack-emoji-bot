@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { getZapier } from "@/lib/zapier";
 import { env } from "@/lib/env";
 import { ActivateButton } from "./ActivateButton";
+import { DeactivateButton } from "./DeactivateButton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -122,6 +123,12 @@ export default async function Home() {
                 <Separator />
                 <ActivateButton />
               </>
+            )}
+
+            {status.active && (
+              <div className="flex justify-center pt-1">
+                <DeactivateButton />
+              </div>
             )}
           </CardContent>
 
