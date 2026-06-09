@@ -31,12 +31,11 @@ export function DeactivateButton({ triggerName }: { triggerName: string }) {
   return (
     <Button
       variant="ghost"
-      size="sm"
       onClick={handleDeactivate}
       disabled={loading}
-      className="text-xs text-muted-foreground hover:text-destructive"
+      className="w-full text-xs text-muted-foreground hover:text-destructive"
     >
-      {loading ? "Deactivating…" : "Deactivate bot"}
+      {loading ? "Deactivating…" : "Deactivate"}
     </Button>
   );
 }

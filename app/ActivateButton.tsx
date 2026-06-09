@@ -34,7 +34,7 @@ export function ActivateButton({ triggerName }: { triggerName: string }) {
       disabled={loading}
       className="w-full bg-orange-500 hover:bg-orange-600 text-white"
     >
-      {loading ? "Activating…" : "Activate Bot"}
+      {loading ? "Activating…" : "Activate"}
     </Button>
   );
 }
