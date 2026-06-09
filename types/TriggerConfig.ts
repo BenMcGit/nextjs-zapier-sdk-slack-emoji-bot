@@ -15,6 +15,12 @@ export type TriggerConfig = {
    */
   name: string;
 
+  /** Human-readable title shown on the dashboard card, e.g. `"Slack Emoji Bot"`. */
+  label: string;
+
+  /** One-line description shown below the title on the dashboard card. */
+  description: string;
+
   /**
    * Zapier app key, e.g. `"slack"` or `"google_sheets"`.
    * Discover valid values with `pnpm zapier:discover`.

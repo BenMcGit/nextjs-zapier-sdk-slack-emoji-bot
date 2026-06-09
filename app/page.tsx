@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { getZapier } from "@/lib/zapier";
 import { env } from "@/lib/env";
+import { triggers } from "@/lib/triggers";
 import { ActivateButton } from "./ActivateButton";
 import { DeactivateButton } from "./DeactivateButton";
 import { RefreshButton } from "./RefreshButton";
@@ -9,8 +10,17 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ExternalLink } from "lucide-react";
+import type { Trigger } from "@/types";
 
-async function getBotStatus() {
+type SlackConnection = { id: string; title: string } | null;
+
+type TriggerStatus = {
+  trigger: Trigger;
+  active: boolean;
+  slackConnection: SlackConnection;
+};
+
+async function getTriggerStatuses(): Promise<{ statuses: TriggerStatus[]; ok: boolean; error?: string }> {
   try {
     const sdk = getZapier();
     const [connectionsResult, inboxesResult] = await Promise.allSettled([
@@ -28,123 +38,133 @@ async function getBotStatus() {
     const hostname = new URL(env.APP_BASE_URL).hostname
       .replace(/[^a-z0-9]+/gi, "-")
       .toLowerCase();
-    const expectedName = `slack-emoji-reaction-bot-${hostname}`;
-    const botInbox = inboxes.find((i) => i.name === expectedName);
 
     const slackConnection = connections.find(
       (c) => c.app_key?.toLowerCase().includes("slack") &&
         (c as { status?: string }).status !== "inactive",
     );
+    const resolvedSlack: SlackConnection = slackConnection
+      ? { id: slackConnection.id, title: slackConnection.title ?? slackConnection.app_key ?? slackConnection.id }
+      : null;
 
-    return {
-      ok: true,
-      active: !!botInbox,
-      slackConnection: slackConnection
-        ? { id: slackConnection.id, title: slackConnection.title ?? slackConnection.app_key ?? slackConnection.id }
-        : null,
-    };
+    const statuses: TriggerStatus[] = triggers.map((trigger) => {
+      const expectedName = `${trigger.name}-${hostname}`;
+      const inbox = inboxes.find((i) => i.name === expectedName);
+      return { trigger, active: !!inbox, slackConnection: resolvedSlack };
+    });
+
+    return { ok: true, statuses };
   } catch (err) {
-    return { ok: false, error: String(err), active: false, slackConnection: null };
+    return { ok: false, error: String(err), statuses: [] };
   }
 }
 
 export default async function Home() {
-  const status = await getBotStatus();
-  const emoji = process.env.SLACK_EMOJI ?? "—";
-  const channel = process.env.SLACK_CHANNEL_ID ?? "—";
+  const { ok, error, statuses } = await getTriggerStatuses();
 
   return (
-    <main className="min-h-screen bg-zinc-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md space-y-4">
-        <Card className={`shadow-md ${status.active ? "[animation:glow-pulse_4s_ease-in-out_infinite]" : ""}`}>
-          <CardHeader className="pb-4 pt-6 px-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h1 className="text-lg font-semibold tracking-tight">Slack Emoji Bot</h1>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  Replies in thread when :{emoji}: is added
-                </p>
-              </div>
-              <Badge
-                variant={status.active ? "default" : "secondary"}
-                className={status.active ? "bg-emerald-500 hover:bg-emerald-500 text-white shrink-0" : "shrink-0"}
-              >
-                {status.active ? "Active" : "Inactive"}
-              </Badge>
-            </div>
-          </CardHeader>
+    <main className="min-h-screen bg-zinc-50 px-6 py-12">
+      <div className="mx-auto max-w-5xl space-y-8">
+        <div className={`grid gap-4 ${
+          statuses.length === 1
+            ? "max-w-md mx-auto"
+            : statuses.length === 2
+            ? "grid-cols-2 max-w-2xl mx-auto"
+            : "grid-cols-3"
+        }`}>
+        {!ok && (
+          <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            Could not reach Zapier SDK. Check your credentials.
+            {error && <p className="mt-1 text-xs opacity-70">{error}</p>}
+          </div>
+        )}
 
-          <CardContent className="space-y-4 px-6 pb-6">
-            {!status.ok && (
-              <div className="rounded-md bg-destructive/10 px-3 py-2 text-xs text-destructive">
-                Could not reach Zapier SDK. Check your credentials.
+        {statuses.map(({ trigger, active, slackConnection }) => (
+          <Card
+            key={trigger.name}
+            className={`shadow-md ${active ? "[animation:glow-pulse_4s_ease-in-out_infinite]" : ""}`}
+          >
+            <CardHeader className="pb-4 pt-6 px-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold tracking-tight">{trigger.label}</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">{trigger.description}</p>
+                </div>
+                <Badge
+                  variant={active ? "default" : "secondary"}
+                  className={active ? "bg-emerald-500 hover:bg-emerald-500 text-white shrink-0" : "shrink-0"}
+                >
+                  {active ? "Active" : "Inactive"}
+                </Badge>
               </div>
-            )}
+            </CardHeader>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Connections</p>
-                <RefreshButton />
-              </div>
-              <div className="flex items-center justify-between gap-4 text-sm">
-                <span className="shrink-0 text-muted-foreground">Slack</span>
-                {status.slackConnection ? (
-                  <div className="flex min-w-0 items-center gap-1.5">
-                    <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
-                    <span className="truncate font-medium">{status.slackConnection.title}</span>
-                  </div>
-                ) : (
+            <CardContent className="space-y-4 px-6 pb-6">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Connections</p>
+                  <RefreshButton />
+                </div>
+                <div className="flex items-center justify-between gap-4 text-sm">
+                  <span className="shrink-0 text-muted-foreground">Slack</span>
+                  {slackConnection ? (
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                      <span className="truncate font-medium">{slackConnection.title}</span>
+                    </div>
+                  ) : (
+                    <a
+                      href="https://zapier.com/app/connections"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors"
+                    >
+                      Connect <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
+                </div>
+                {slackConnection ? (
                   <a
                     href="https://zapier.com/app/connections"
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1 text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors"
+                    className="block text-center text-xs text-muted-foreground hover:text-foreground transition-colors pt-1"
                   >
-                    Connect <ExternalLink className="h-3 w-3" />
+                    View all connections →
                   </a>
-                )}
+                ) : null}
               </div>
-              <a
-                href="https://zapier.com/app/connections"
-                target="_blank"
-                rel="noreferrer"
-                className="block text-center text-xs text-muted-foreground hover:text-foreground transition-colors pt-1"
-              >
-                View all connections →
-              </a>
-            </div>
 
-            <Separator />
+              <Separator />
 
-            <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Configuration</p>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="shrink-0 text-muted-foreground">Emoji</span>
-                  <span className="font-mono font-medium">:{emoji}:</span>
-                </div>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="shrink-0 text-muted-foreground">Channel</span>
-                  <span className="font-mono font-medium text-xs">{channel}</span>
+              <div className="space-y-2">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Configuration</p>
+                <div className="space-y-3 text-sm">
+                  {Object.entries(trigger.inputs ?? {}).map(([key, value]) => (
+                    <div key={key} className="flex items-center justify-between gap-4">
+                      <span className="shrink-0 capitalize text-muted-foreground">{key}</span>
+                      <span className="font-mono font-medium text-xs truncate max-w-[200px]">{String(value)}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
 
-            {!status.active && status.slackConnection && (
-              <>
-                <Separator />
-                <ActivateButton />
-              </>
-            )}
+              {!active && slackConnection && (
+                <>
+                  <Separator />
+                  <ActivateButton triggerName={trigger.name} />
+                </>
+              )}
 
-            {status.active && (
-              <div className="flex justify-center pt-1">
-                <DeactivateButton />
-              </div>
-            )}
-          </CardContent>
-
-        </Card>
+              {active && (
+                <div className="flex justify-center pt-1">
+                  <DeactivateButton triggerName={trigger.name} />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+        </div>
 
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center gap-1.5">

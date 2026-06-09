@@ -28,10 +28,13 @@ function defineTrigger(config: TriggerConfig): Trigger {
       const secret = env.ZAPIER_WEBHOOK_SECRET;
       const baseUrl = env.APP_BASE_URL;
       const notificationUrl = `${baseUrl}${config.notificationPath}${secret ? `?token=${secret}` : ""}`;
-      const hostname = new URL(baseUrl).hostname.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
-      const connection = typeof config.connection === "function"
-        ? await config.connection()
-        : config.connection;
+      const hostname = new URL(baseUrl).hostname
+        .replace(/[^a-z0-9]+/gi, "-")
+        .toLowerCase();
+      const connection =
+        typeof config.connection === "function"
+          ? await config.connection()
+          : config.connection;
       return ensureInbox({
         name: `${config.name}-${hostname}`,
         app: config.app,
@@ -48,12 +51,23 @@ function defineTrigger(config: TriggerConfig): Trigger {
 
 export const emojiReactionTrigger = defineTrigger({
   name: "slack-emoji-reaction-bot",
+  label: "Slack Emoji Bot",
+  get description() {
+    return `Replies in thread when :${env.SLACK_EMOJI}: is added`;
+  },
   app: "slack",
   action: "new_reaction_added_v2",
   connection: resolveSlackConnection,
   inputs: {
-    get conversation() { return env.SLACK_CHANNEL_ID; },
-    get emoji() { return env.SLACK_EMOJI; },
+    get conversation() {
+      return env.SLACK_CHANNEL_ID;
+    },
+    get emoji() {
+      return env.SLACK_EMOJI;
+    },
   },
   notificationPath: "/api/webhook/emoji-reaction",
 });
+
+// All triggers — add new ones here and they appear automatically on the dashboard.
+export const triggers = [emojiReactionTrigger];

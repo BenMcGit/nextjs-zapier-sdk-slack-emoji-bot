@@ -1,12 +1,28 @@
-import { NextResponse } from "next/server";
-import { emojiReactionTrigger } from "@/lib/triggers";
+import { NextRequest, NextResponse } from "next/server";
+import { triggers } from "@/lib/triggers";
 import { getZapier } from "@/lib/zapier";
 import { clearInboxCache } from "@/lib/inbox";
 import { env } from "@/lib/env";
 
-export async function POST() {
+function findTrigger(name: string) {
+  return triggers.find((t) => t.name === name);
+}
+
+function hostnameInboxName(baseName: string) {
+  const hostname = new URL(env.APP_BASE_URL).hostname
+    .replace(/[^a-z0-9]+/gi, "-")
+    .toLowerCase();
+  return `${baseName}-${hostname}`;
+}
+
+export async function POST(req: NextRequest) {
+  const { name } = await req.json();
+  const trigger = findTrigger(name);
+  if (!trigger) {
+    return NextResponse.json({ ok: false, error: `Unknown trigger: ${name}` }, { status: 400 });
+  }
   try {
-    await emojiReactionTrigger.resolveInbox();
+    await trigger.resolveInbox();
     return NextResponse.json({ ok: true });
   } catch (err) {
     const message = String(err);
@@ -25,13 +41,15 @@ export async function POST() {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+  const { name } = await req.json();
+  const trigger = findTrigger(name);
+  if (!trigger) {
+    return NextResponse.json({ ok: false, error: `Unknown trigger: ${name}` }, { status: 400 });
+  }
   try {
     const zapier = getZapier();
-    const hostname = new URL(env.APP_BASE_URL).hostname
-      .replace(/[^a-z0-9]+/gi, "-")
-      .toLowerCase();
-    const expectedName = `slack-emoji-reaction-bot-${hostname}`;
+    const expectedName = hostnameInboxName(trigger.name);
     const inboxes = await zapier.listTriggerInboxes();
     const inbox = (inboxes.data ?? []).find((i) => i.name === expectedName);
     if (!inbox) {
